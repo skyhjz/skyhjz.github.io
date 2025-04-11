@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search> 
+  
+  
+    
+    <entry>
+      <title>Hexo安装主题Solitude</title>
+      <link href="/2025/04/06/Hexo%E5%AE%89%E8%A3%85%E4%B8%BB%E9%A2%98Solitude/"/>
+      <url>/2025/04/06/Hexo%E5%AE%89%E8%A3%85%E4%B8%BB%E9%A2%98Solitude/</url>
+      
+        <content type="html"><![CDATA[<p>第一次使用Hexo，安装了主题Solitude，记录一下安装过程。<br>首先Solitude主题使用了 Pug 与 Stylus，需要额外安装各自的渲染器。</p><h3 id="在根目录下执行以下命令："><a href="#在根目录下执行以下命令：" class="headerlink" title="在根目录下执行以下命令："></a>在根目录下执行以下命令：</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ npm install hexo-renderer-pug hexo-renderer-stylus --save</span><br></pre></td></tr></table></figure><h3 id="安装主题"><a href="#安装主题" class="headerlink" title="安装主题"></a>安装主题</h3><p>有两种安装方法一种是使用git直接下载主题，一种是使用npm下载主题。<br>我是用npm下载的。所以这里记录的是npm下载的方法。</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ npm install hexo-theme-solitude</span><br></pre></td></tr></table></figure><h3 id="应用主题"><a href="#应用主题" class="headerlink" title="应用主题"></a>应用主题</h3><p>修改Hexo配置文件_config.yml，将主题设置为Solitude。</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">theme: solitude</span><br></pre></td></tr></table></figure><h3 id="测试主题是否应用成功"><a href="#测试主题是否应用成功" class="headerlink" title="测试主题是否应用成功"></a>测试主题是否应用成功</h3><p>根据Hexo官方文档，我们可以使用以下命令来测试主题是否应用成功：</p><h3 id="生成静态文件"><a href="#生成静态文件" class="headerlink" title="生成静态文件"></a>生成静态文件</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure><p>可以简化为：</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo g</span><br></pre></td></tr></table></figure><h3 id="启动本地服务器"><a href="#启动本地服务器" class="headerlink" title="启动本地服务器"></a>启动本地服务器</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure><p>可以简化为：</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo s</span><br></pre></td></tr></table></figure><h3 id="访问本地服务器"><a href="#访问本地服务器" class="headerlink" title="访问本地服务器"></a>访问本地服务器</h3><p>在浏览器中输入一下网址：</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ http://localhost:4000/</span><br></pre></td></tr></table></figure><p>如果看到了Solitude主题的页面，说明主题应用成功。<br>但是这个页面默认是英文的，我们可以修改配置文件_config.yml，将语言设置为中文。</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">language: zh-CN</span><br></pre></td></tr></table></figure><p>然后重新生成静态文件，启动本地服务器，访问本地服务器，就可以看到Solitude主题的中文页面了。</p><h3 id="配置主题"><a href="#配置主题" class="headerlink" title="配置主题"></a>配置主题</h3><p>Solitude主题的配置文件是_config.solitude.yml，默认是不存在的需要我们拷贝到根目录下。</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ copy .\node_modules\hexo-theme-solitude\_config.yml .\_config.solitude.yml</span><br></pre></td></tr></table></figure><p>_config.solitude.yml配置文件优先级高于_config.yml，所以得在_config.solitude.yml中配置主题。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 随笔 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 学习 </tag>
+            
+            <tag> Hexo </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>Hello World</title>
+      <link href="/2025/04/06/hello-world/"/>
+      <url>/2025/04/06/hello-world/</url>
+      
+        <content type="html"><![CDATA[<p>欢迎来到 <a href="https://hexo.io/">Hexo</a>！这是部署的第一篇文章。查看 <a href="https://hexo.io/docs/">文档</a> 以获取更多信息。<br>如果在使用Hexo时遇到任何问题，可以在 <a href="https://hexo.io/docs/troubleshooting.html">故障排除</a> 中找到答案，或者在 <a href="https://github.com/hexojs/hexo/issues">GitHub</a> 上进行提问。</p><h2 id="快速入门"><a href="#快速入门" class="headerlink" title="快速入门"></a>快速入门</h2><h3 id="创建一个新博客"><a href="#创建一个新博客" class="headerlink" title="创建一个新博客"></a>创建一个新博客</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;博客名称&quot;</span></span><br></pre></td></tr></table></figure><p>更多信息: <a href="https://hexo.io/docs/writing.html">写作</a></p><h3 id="运行服务"><a href="#运行服务" class="headerlink" title="运行服务"></a>运行服务</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure><p>更多信息: <a href="https://hexo.io/docs/server.html">服务器</a></p><h3 id="生成静态文件"><a href="#生成静态文件" class="headerlink" title="生成静态文件"></a>生成静态文件</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure><p>更多信息: <a href="https://hexo.io/docs/generating.html">生成</a></p><h3 id="部署到远程站点"><a href="#部署到远程站点" class="headerlink" title="部署到远程站点"></a>部署到远程站点</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure><p>更多信息: <a href="https://hexo.io/docs/one-command-deployment.html">部署</a></p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 随笔 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 学习 </tag>
+            
+            <tag> Hexo </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+  
+  
+</search>
