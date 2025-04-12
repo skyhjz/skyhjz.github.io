@@ -4,7 +4,7 @@
   
     
     <entry>
-      <title>Hexo优化和使用</title>
+      <title>Hexo的使用和Markdown基础语法</title>
       <link href="/2025/04/07/Hexo%E7%9A%84%E4%BD%BF%E7%94%A8%E5%92%8CMarkdown%E5%9F%BA%E7%A1%80%E8%AF%AD%E6%B3%95/"/>
       <url>/2025/04/07/Hexo%E7%9A%84%E4%BD%BF%E7%94%A8%E5%92%8CMarkdown%E5%9F%BA%E7%A1%80%E8%AF%AD%E6%B3%95/</url>
       
@@ -23,6 +23,8 @@
             <tag> 学习 </tag>
             
             <tag> Hexo </tag>
+            
+            <tag> Markdown </tag>
             
         </tags>
       
