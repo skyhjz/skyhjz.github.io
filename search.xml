@@ -8,7 +8,7 @@
       <link href="/2025/04/13/Win%E7%B3%BB%E7%BB%9F%E4%B8%8A%E7%BC%96%E8%BE%91Markdown%E8%BD%AF%E4%BB%B6%E4%BD%BF%E7%94%A8%E5%BF%83%E5%BE%97/"/>
       <url>/2025/04/13/Win%E7%B3%BB%E7%BB%9F%E4%B8%8A%E7%BC%96%E8%BE%91Markdown%E8%BD%AF%E4%BB%B6%E4%BD%BF%E7%94%A8%E5%BF%83%E5%BE%97/</url>
       
-        <content type="html"><![CDATA[<p>由于Hexo是使用Markdown语法编写博客，<br>而在记事本上写Markdown语法是非常麻烦的，主要是预览不到显示效果。<br>win系统上有很多编辑器，我把网上有些热度的编辑器都下载下来使用下，在这里记录下我在使用这些软件的优缺点。</p><blockquote><p>先写个标题 嘿嘿😊</p></blockquote>]]></content>
+        <content type="html"><![CDATA[<p>由于Hexo是使用Markdown语法编写博客，<br>而在记事本上写Markdown语法是非常麻烦的，主要是预览不到显示效果。<br>win系统上有很多编辑器，我把网上有些热度的编辑器都下载下来使用下，在这里记录下我在使用这些软件的优缺点。</p><p><strong>Typora</strong>，<br>Typora可以说是win系统上推荐度最高的Markdown编辑器，搜索首推就是它。<br>当然它也没有辜负大家对他的推荐，<br>功能非常强大，<br>支持实时预览，<br>支持更换主题，<br>支持导出PDF，支持导出Word，还有其他很多格式，<br>最主要是可以全屏编辑，不像有些编辑器左面总是有两个框框，<br>可以说是win系统上最好用的Markdown编辑器；<br>最大的缺点就是需要付费。<br>下面展示两个Typora图片，源码模式和实时预览：<br><img src="https://i.imgs.ovh/2025/04/13/aRi4c.png" alt="源码模式"><br><img src="https://i.imgs.ovh/2025/04/13/aRNk9.png" alt="实时预览"><br>最终贫穷的我还是放弃了Typora。</p><p><strong>微信Markdown编辑器</strong><br>应该很多人不是很了解这个，它不是软件而是一个网址可以直接在线编辑Markdown，<br>但是它的功能有限，只能导出html和md格式，支持实时预览，不过是手机端的，如果和我一样只是简单的写博客，记录自己的一时的想法，还是可以的。<br><a href="https://doocs-md.pages.dev/" title="微信Markdown编辑器">微信Markdown编辑器网址</a><br>下面是截图：<br><img src="https://i.imgs.ovh/2025/04/13/akaHA.png" alt="微信Markdown编辑器"></p><p>先分享到这，该去做饭了，其他的编辑器后面再写😊😊😊</p>]]></content>
       
       
       <categories>
@@ -51,9 +51,9 @@
             
             <tag> 学习 </tag>
             
-            <tag> Markdown </tag>
-            
             <tag> Hexo </tag>
+            
+            <tag> Markdown </tag>
             
         </tags>
       
