@@ -4,6 +4,39 @@
   
     
     <entry>
+      <title>设计模式-适配者模式</title>
+      <link href="/2025/04/26/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E9%80%82%E9%85%8D%E8%80%85%E6%A8%A1%E5%BC%8F/"/>
+      <url>/2025/04/26/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E9%80%82%E9%85%8D%E8%80%85%E6%A8%A1%E5%BC%8F/</url>
+      
+        <content type="html"><![CDATA[<h3 id="设计模式之适配器模式"><a href="#设计模式之适配器模式" class="headerlink" title="设计模式之适配器模式"></a>设计模式之适配器模式</h3><h4 id="什么是适配器模式"><a href="#什么是适配器模式" class="headerlink" title="什么是适配器模式"></a>什么是适配器模式</h4><ul><li>适配器模式是一种结构性设计模式，它将一个类的接口转换成客户端所期望的另一个接口。</li><li>适配器模式使得原本由于接口不兼容而不能一起工作的类能够协同工作。</li></ul><h4 id="在Java中适配器模式通常分为两种类型：类适配器和对象适配器。"><a href="#在Java中适配器模式通常分为两种类型：类适配器和对象适配器。" class="headerlink" title="在Java中适配器模式通常分为两种类型：类适配器和对象适配器。"></a>在Java中适配器模式通常分为两种类型：类适配器和对象适配器。</h4><ol><li><strong>类适配器:</strong> 类适配器通过多重继承实现，适配器类同时继承目标类并实现适配者类接口。通过继承目标类，适配器类可以访目标类的方法和属性；通过实现适配者类接口，适配器类可以将适配者类的方法转换为目标类的方法。</li><li><strong>对象适配器:</strong> 对象适配器通过组合实现，适配器类持有适配者类的实例，并同时实现目类的接口。通过持有适配者类的实例，适配器类可以调用适配者类的方法；通过实现目标类的接口，适配器类可以将适配者类的方法转换为目标类的方法。</li></ol><p><em>适配器模式的主要作用是解决两不兼容接口之间的问题，它可以使得原本无法协同工作的类能够一起工作</em><br>如图所示：<br><img src="https://i.imgs.ovh/2025/05/01/rqgW9.png" alt="适配者模式图解" title="适配者模式"></p><p>后续会更新具体的代码实现…</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 学习 </category>
+          
+          <category> 设计模式 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 学习 </tag>
+            
+            <tag> Java </tag>
+            
+            <tag> 设计模式 </tag>
+            
+            <tag> 适配者模式 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>设计模式-策略模式</title>
       <link href="/2025/04/24/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%AD%96%E7%95%A5%E6%A8%A1%E5%BC%8F/"/>
       <url>/2025/04/24/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%AD%96%E7%95%A5%E6%A8%A1%E5%BC%8F/</url>
