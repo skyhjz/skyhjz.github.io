@@ -1,0 +1,267 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1"><title>设计模式-装饰器模式 | 徍正的随笔Blog</title><noscript>开启JavaScript才能访问本站哦~</noscript><link rel="icon" href="https://i.imgs.ovh/2025/04/25/c1IKb.png"><!-- index.css--><link rel="stylesheet" href="/css/index.css?v=3.0.18"><!-- inject head--><link rel="canonical" href="http://skyhjz.email/2025/05/01/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E8%A3%85%E9%A5%B0%E5%99%A8%E6%A8%A1%E5%BC%8F/index.html"><link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.7.2/css/all.min.css"><!-- aplayer--><!-- swiper--><!-- fancybox ui--><!-- katex--><!-- Open Graph--><meta name="description" content="装饰器模式"><!-- pwa--><meta name="apple-mobile-web-app-capable" content="徍正的随笔Blog"><meta name="theme-color" content="var(--efu-main)"><meta name="apple-mobile-web-app-status-bar-style" content="var(--efu-main)"><link rel="bookmark" href="https://i.imgs.ovh/2025/04/25/c1IKb.png"><link rel="apple-touch-icon" href="https://i.imgs.ovh/2025/04/25/c1IKb.png" sizes="180x180"><script>console.log(' %c Solitude %c ' + '3.0.18' + ' %c https://github.com/everfu/hexo-theme-solitude',
+    'background:#35495e ; padding: 1px; border-radius: 3px 0 0 3px;  color: #fff',
+    'background:#ff9a9a ; padding: 1px; border-radius: 0 3px 3px 0;  color: #fff',
+    'background:unset ; padding: 1px; border-radius: 0 3px 3px 0;  color: #fff')
+</script><script>(()=>{
+        const saveToLocal = {
+            set: function setWithExpiry(key, value, ttl) {
+                if (ttl === 0)
+                    return
+                const now = new Date()
+                const expiryDay = ttl * 86400000
+                const item = {
+                    value: value,
+                    expiry: now.getTime() + expiryDay
+                }
+                localStorage.setItem(key, JSON.stringify(item))
+            },
+            get: function getWithExpiry(key) {
+                const itemStr = localStorage.getItem(key)
+
+                if (!itemStr) {
+                    return undefined
+                }
+                const item = JSON.parse(itemStr)
+                const now = new Date()
+
+                if (now.getTime() > item.expiry) {
+                    localStorage.removeItem(key)
+                    return undefined
+                }
+                return item.value
+            }
+        };
+        window.utils = {
+            saveToLocal: saveToLocal,
+            getCSS: (url, id = false) => new Promise((resolve, reject) => {
+              const link = document.createElement('link')
+              link.rel = 'stylesheet'
+              link.href = url
+              if (id) link.id = id
+              link.onerror = reject
+              link.onload = link.onreadystatechange = function() {
+                const loadState = this.readyState
+                if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+                link.onload = link.onreadystatechange = null
+                resolve()
+              }
+              document.head.appendChild(link)
+            }),
+            getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+              const script = document.createElement('script')
+              script.src = url
+              script.async = true
+              script.onerror = reject
+              script.onload = script.onreadystatechange = function() {
+                const loadState = this.readyState
+                if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+                script.onload = script.onreadystatechange = null
+                resolve()
+              }
+
+              Object.keys(attr).forEach(key => {
+                script.setAttribute(key, attr[key])
+              })
+
+              document.head.appendChild(script)
+            }),
+            addGlobalFn: (key, fn, name = false, parent = window) => {
+                const globalFn = parent.globalFn || {}
+                const keyObj = globalFn[key] || {}
+
+                if (name && keyObj[name]) return
+
+                name = name || Object.keys(keyObj).length
+                keyObj[name] = fn
+                globalFn[key] = keyObj
+                parent.globalFn = globalFn
+            },
+            addEventListenerPjax: (ele, event, fn, option = false) => {
+              ele.addEventListener(event, fn, option)
+              utils.addGlobalFn('pjax', () => {
+                  ele.removeEventListener(event, fn, option)
+              })
+          },
+        }
+    })()</script><!-- theme--><script>initTheme = () => {
+    let isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+    const cachedMode = utils.saveToLocal.get('theme');
+    if (cachedMode === undefined) {
+        const nowMode =
+            isDarkMode ? 'dark' : 'light'
+        document.documentElement.setAttribute('data-theme', nowMode);
+    } else {
+        document.documentElement.setAttribute('data-theme', cachedMode);
+    }
+    typeof rm === 'object' && rm.mode(cachedMode === 'dark' && isDarkMode)
+}
+initTheme()</script><!-- global head--><script>const GLOBAL_CONFIG = {
+    root: '/',
+    algolia: undefined,
+    localsearch: {"preload":false,"path":"/search.xml"},
+    runtime: '2024-12-30 00:00:00',
+    lazyload: {
+        enable: false,
+        error: '/img/error_load.avif'
+    },
+    copyright: {"limit":50,"author":"作者: 徍正","link":"链接: ","source":"来源: 徍正的随笔Blog","info":"著作权归作者所有。 商业转载请联系作者获得授权，非商业转载请注明出处。"},
+    highlight: {"limit":200,"expand":true,"copy":true,"syntax":"highlight.js"},
+    randomlink: false,
+    lang: {"theme":{"dark":"已切换至深色模式","light":"已切换至浅色模式"},"copy":{"success":"复制成功","error":"复制失败"},"backtop":"返回顶部","time":{"day":"天前","hour":"小时前","just":"刚刚","min":"分钟前","month":"个月前"},"day":" 天","f12":"开发者模式已打开，请遵循GPL协议。","totalk":"无需删除空行，直接输入评论即可","search":{"empty":"找不到你查询的内容：${query}","hit":"找到 ${hits} 条结果，用时 ${time} 毫秒","placeholder":"输入关键词快速查找","count":"共 <b>${count}</b> 条结果。","loading":"搜索中..."}},
+    aside: {
+        state: {
+            morning: "✨ 早上好，无聊的一天开始了",
+            noon: "🍲 午餐时间 - 该吃些什么呢🤔",
+            afternoon: "🌞 下午好 - 睡午觉了吗🥱",
+            night: "🌙 晚上好 - 一天中最美好的时刻到来了😄",
+            goodnight: "😴羡慕你还能在这个点不困",
+        },
+        witty_words: ["在这个快节奏的世界里，也许我们需要停一停，去明悟下自己的初心。","陌生人不要只看比你生活好的人，你在并不是这个世界最差的人，你现在的生活也是别人羡慕的。","祝你好运，陌生人"],
+        witty_comment: {
+            prefix: '好久不见，',
+            back: '欢迎再次回来，',
+        },
+    },
+    covercolor: {
+        enable: false
+    },
+    comment: false,
+    lightbox: 'null',
+    right_menu: {"mode":{"dark":"深色模式","light":"浅色模式"},"img_error":"此图片无法复制与下载","translate":true,"ctrlOriginalMenu":"按住Ctrl+右键可打开浏览器右键菜单"},
+    translate: {"translateDelay":0,"defaultEncoding":2},
+    lure: false,
+    expire: false,
+};</script><!-- page-config head--><script id="config-diff">var PAGE_CONFIG = {
+    is_post: true,
+    is_page: false,
+    is_home: false,
+    page: '',
+    toc: true,
+    comment: false,
+    ai_text: false,
+    color: false,
+}</script><meta name="generator" content="Hexo 7.3.0"></head><body id="body"><!-- universe--><canvas id="universe"></canvas><!-- background img--><div id="global_bg"></div><!-- loading--><!-- console--><!-- sidebar--><div id="sidebar" style="zoom: 1;"><div id="menu-mask" style="display: none;"></div><div id="sidebar-menus"><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/archives/"><div class="headline">文章</div><div class="length-num">17</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/categories/"><div class="headline">分类</div><div class="length-num">2</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/tags/"><div class="headline">标签</div><div class="length-num">18</div></a></div></div></div><span class="sidebar-menu-item-title">功能</span><div class="sidebar-menu-item"><span class="darkmode_switchbutton menu-child" onclick="sco.switchDarkMode()"><i class="solitude fas fa-circle-half-stroke"></i><span>显示模式</span></span></div><div class="back-menu-list-groups"><div class="back-menu-list-group"><div class="back-menu-list-title">我的</div><div class="back-menu-list"><a class="back-menu-item" target="_blank" rel="noopener" href="https://github.com/skyhjz" title="GitHub"><img class="nolazyload back-menu-item-icon" src="https://i.imgs.ovh/2025/04/11/Zi8qn.webp" alt="GitHub"><span class="back-menu-item-text">GitHub</span></a><a class="back-menu-item" target="_blank" rel="noopener" href="https://space.bilibili.com/17592360" title="Bilibili"><img class="nolazyload back-menu-item-icon" src="https://i.imgs.ovh/2025/04/11/a0Ym0.webp" alt="Bilibili"><span class="back-menu-item-text">Bilibili</span></a></div></div></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><span>首页</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span>文库</span></a><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="solitude  fas fa-folder-closed"></i><span>全部文章</span></a></li><li><a class="site-page child" href="/categories/"><i class="solitude  fas fa-clone"></i><span>全部分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="solitude  fas fa-tags"></i><span>全部标签</span></a></li></ul></div></div><span class="sidebar-menu-item-title">标签</span><div class="card-tags"><div class="card-tag-cloud"><a href="/tags/%E5%AD%A6%E4%B9%A0/">学习<sup>17</sup></a><a href="/tags/Hexo/">Hexo<sup>3</sup></a><a href="/tags/Markdown/">Markdown<sup>2</sup></a><a href="/tags/%E7%BC%96%E8%BE%91%E5%99%A8/">编辑器<sup>1</sup></a><a href="/tags/Java/">Java<sup>13</sup></a><a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">设计模式<sup>12</sup></a><a href="/tags/%E4%BB%A3%E7%90%86%E6%A8%A1%E5%BC%8F/">代理模式<sup>1</sup></a><a href="/tags/%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/">单例模式<sup>1</sup></a><a href="/tags/%E5%8E%9F%E5%9E%8B%E6%A8%A1%E5%BC%8F/">原型模式<sup>1</sup></a><a href="/tags/%E5%A4%96%E8%A7%82%E6%A8%A1%E5%BC%8F/">外观模式<sup>1</sup></a><a href="/tags/%E5%B7%A5%E5%8E%82%E6%A8%A1%E5%BC%8F/">工厂模式<sup>1</sup></a><a href="/tags/%E5%BB%BA%E9%80%A0%E8%80%85%E6%A8%A1%E5%BC%8F/">建造者模式<sup>1</sup></a><a href="/tags/%E6%A8%A1%E6%9D%BF%E6%96%B9%E6%B3%95%E6%A8%A1%E5%BC%8F/">模板方法模式<sup>1</sup></a><a href="/tags/%E7%AD%96%E7%95%A5%E6%A8%A1%E5%BC%8F/">策略模式<sup>1</sup></a><a href="/tags/%E8%A3%85%E9%A5%B0%E5%99%A8%E6%A8%A1%E5%BC%8F/">装饰器模式<sup>1</sup></a><a href="/tags/%E8%A7%82%E5%AF%9F%E8%80%85%E6%A8%A1%E5%BC%8F/">观察者模式<sup>1</sup></a><a href="/tags/%E9%80%82%E9%85%8D%E8%80%85%E6%A8%A1%E5%BC%8F/">适配者模式<sup>1</sup></a><a href="/tags/%E5%BE%AE%E4%BF%A1/">微信<sup>1</sup></a></div></div></div></div><!-- keyboard--><!-- righhtside--><div class="needEndHide" id="rightside"><div class="rs_hide"><button class="translate" type="button" title="简繁转换">简</button><button class="mode" type="button" title="显示模式切换" onclick="sco.switchDarkMode()"><i class="fas fa-circle-half-stroke"></i></button></div><div class="rs_show"><button class="config" type="button" title="扩展" onclick="document.querySelector(&quot;.rs_hide&quot;).classList.toggle(&quot;show&quot;)"><i class="fas fa-gear fa-spin"></i></button><button class="mobile toc" type="button" title="目录" onclick="document.querySelector('#card-toc').classList.toggle('open')"><i class="fas fa-list"></i></button><button class="top" type="button" title="返回顶部" onclick="sco.toTop()"><i class="fas fa-arrow-up"></i><span id="percent">0</span></button></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav class="show" id="nav"><div id="nav-group"><div id="blog_name"><div class="back-home-button" tabindex="-1"><i class="back-home-button-icon solitude fas fa-bars-progress"></i><div class="back-menu-list-groups"><div class="back-menu-list-group"><div class="back-menu-list-title">我的</div><div class="back-menu-list"><a class="back-menu-item" target="_blank" rel="noopener" href="https://github.com/skyhjz" title="GitHub"><img class="nolazyload back-menu-item-icon" src="https://i.imgs.ovh/2025/04/11/Zi8qn.webp" alt="GitHub"><span class="back-menu-item-text">GitHub</span></a><a class="back-menu-item" target="_blank" rel="noopener" href="https://space.bilibili.com/17592360" title="Bilibili"><img class="nolazyload back-menu-item-icon" src="https://i.imgs.ovh/2025/04/11/a0Ym0.webp" alt="Bilibili"><span class="back-menu-item-text">Bilibili</span></a></div></div></div></div><a id="site-name" href="/" title="返回博客主页"><span class="title">主页</span><i class="solitude fas fa-home"></i></a></div><div id="page-name-mask"><div id="page-name"><a id="page-name-text" onclick="sco.toTop()">设计模式-装饰器模式</a></div></div><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><span>首页</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span>文库</span></a><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="solitude  fas fa-folder-closed"></i><span>全部文章</span></a></li><li><a class="site-page child" href="/categories/"><i class="solitude  fas fa-clone"></i><span>全部分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="solitude  fas fa-tags"></i><span>全部标签</span></a></li></ul></div></div></div><div id="nav-left"></div><div id="nav-right"><div class="nav-button" id="randomPost_button"><a class="site-page" onclick="toRandomPost()" title="随机一篇文章" href="javascript:void(0);"><i class="solitude fas fa-dice-d6"></i></a></div><div class="nav-button" id="search-button"><a class="site-page social-icon search" href="javascript:void(0);" title="搜索"><i class="solitude fas fa-magnifying-glass"></i></a></div><div id="toggle-menu"><a class="site-page"><i class="solitude fas fa-bars"></i></a></div></div></div></nav><div class="coverdiv" id="coverdiv"><img class="nolazyload" id="post-cover" src="https://i.imgs.ovh/2025/05/09/vDKk4.jpeg" alt="设计模式-装饰器模式"></div><div id="post-info"><div id="post-firstinfo"><div class="meta-firstline"><a class="post-meta-original" title="该文章为原创文章，注意版权协议">原创</a><span class="post-meta-categories"><a class="post-meta-categories" href="/categories/%E5%AD%A6%E4%B9%A0/">学习</a></span><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E5%AD%A6%E4%B9%A0/"><span class="tags-name tags-punctuation"><i class="solitude fas fa-hashtag"></i>学习</span></a><a class="post-meta__tags" href="/tags/Java/"><span class="tags-name tags-punctuation"><i class="solitude fas fa-hashtag"></i>Java</span></a><a class="post-meta__tags" href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/"><span class="tags-name tags-punctuation"><i class="solitude fas fa-hashtag"></i>设计模式</span></a><a class="post-meta__tags" href="/tags/%E8%A3%85%E9%A5%B0%E5%99%A8%E6%A8%A1%E5%BC%8F/"><span class="tags-name tags-punctuation"><i class="solitude fas fa-hashtag"></i>装饰器模式</span></a></div></div></div></div><h1 class="post-title">设计模式-装饰器模式</h1><div id="post-meta"><div class="meta-secondline"><span class="post-meta-date" title="发布于 2025-05-01 15:27:00"><i class="post-meta-icon solitude fas fa-calendar-days"></i><time datetime="2025-05-01T07:27:00.000Z">2025-05-01T07:27:00.000Z</time></span><span class="post-meta-date" title="最后更新于 2025-05-09 15:34:29"><i class="post-meta-icon solitude fas fa-arrows-rotate"></i><time datetime="2025-05-09T07:34:29.066Z">2025-05-09T07:34:29.066Z</time></span><span class="post-meta-position" title="作者IP归属地为China"><i class="post-meta-icon solitude fas fa-location-dot"></i><span>China</span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content article-container"><h3 id="设计模式之装饰器模式"><a href="#设计模式之装饰器模式" class="headerlink" title="设计模式之装饰器模式"></a>设计模式之装饰器模式</h3><h4 id="1-概述"><a href="#1-概述" class="headerlink" title="1. 概述"></a>1. 概述</h4><p><strong>装饰器模式</strong>是一种<strong>结构型设计模式</strong>，它允许在<strong>不改变</strong>现有对象结构的前提下，<strong>动态地</strong>给对象添加额外的职责。 这种模式创建了一个装饰器类，用来包装原有的类，并在保持类方法签名完整性的前提下，提供额外的功能。 装饰器模式利用<strong>组合</strong>而非继承的方式， 具有比继承更加灵活性的特点，可以有效地避免类爆炸的问题。</p>
+<h4 id="2-模式意图"><a href="#2-模式意图" class="headerlink" title="2. 模式意图"></a>2. 模式意图</h4><ul>
+<li><strong>动态扩展功能：</strong> 在运行时动态地给对象增加额外的职责。</li>
+<li><strong>避免继承的复杂性：</strong> 需要给一个现有的类增加职责，但是又不想通过继承的方式来实现的时候（应该优先使用组合而非继承），或者通过继承的方式不现实的时候（可能由于排列组合产生类爆炸的问题）。</li>
+<li><strong>保持接口一致性：</strong>  确保装饰后的对象和原始对象具有相同的接口，客户端可以以一致的方式对待它们。</li>
+<li><strong>灵活组合：</strong>  允许以不同的顺序和组合方式应用多个装饰器。</li>
+</ul>
+<h4 id="3-适用场景"><a href="#3-适用场景" class="headerlink" title="3. 适用场景"></a>3. 适用场景</h4><ul>
+<li>需要在运行时动态地给对象增加额外的职责，而不能通过继承来实现。</li>
+<li>需要给一个类增加的职责有很多，而且这些职责是可以动态组合的。</li>
+<li>需要避免因为职责的增加而导致类的数量剧增（“类爆炸”）。</li>
+<li>当不能使用继承的时候，使用装饰模式。</li>
+</ul>
+<h4 id="4-优缺点"><a href="#4-优缺点" class="headerlink" title="4. 优缺点"></a>4. 优缺点</h4><p><strong>优点：</strong></p>
+<ul>
+<li><strong>灵活性：</strong> 可以在运行时动态地添加或删除职责，而无需修改原始类。</li>
+<li><strong>扩展性：</strong> 可以很容易地添加新的装饰器，扩展对象的功能。</li>
+<li><strong>避免继承：</strong> 通过组合而非继承的方式扩展功能，避免了继承带来的类爆炸问题。</li>
+<li><strong>符合开闭原则：</strong> 对扩展开放，对修改关闭。</li>
+</ul>
+<p><strong>缺点：</strong></p>
+<ul>
+<li><strong>复杂性增加：</strong>  使用装饰器模式可能会导致类的数量增加，使得系统更加复杂。</li>
+<li><strong>调试困难：</strong>  由于使用了多层包装，可能会增加调试的难度。</li>
+<li><strong>装饰器的顺序很重要：</strong>  不同的装饰器顺序可能会导致不同的结果。</li>
+<li><strong>可能产生大量细小对象：</strong> 过度使用装饰器可能会导致系统中存在大量细小对象，影响性能。</li>
+</ul>
+<h4 id="5-模式结构"><a href="#5-模式结构" class="headerlink" title="5. 模式结构"></a>5. 模式结构</h4><p>装饰器模式主要包含以下角色：</p>
+<ul>
+<li><strong>组件 (Component)：</strong><ul>
+<li>定义一个对象接口，可以给这些对象动态地添加职责。</li>
+</ul>
+</li>
+<li><strong>具体组件 (Concrete Component)：</strong><ul>
+<li>实现组件接口。</li>
+<li>定义了具体的对象，也就是被装饰器装饰的对象。</li>
+</ul>
+</li>
+<li><strong>装饰器 (Decorator)：</strong><ul>
+<li>持有一个组件对象的实例，并定义一个与组件接口一致的接口。</li>
+<li>负责给组件添加额外的职责。</li>
+</ul>
+</li>
+<li><strong>具体装饰器 (Concrete Decorator)：</strong><ul>
+<li>实现装饰器接口，负责给组件添加具体的职责。</li>
+</ul>
+</li>
+</ul>
+<h4 id="6-代码示例"><a href="#6-代码示例" class="headerlink" title="6. 代码示例"></a>6. 代码示例</h4><p><strong>场景：</strong><br>假设你正在开发一个咖啡店的订单系统。 你有不同种类的咖啡（例如，浓缩咖啡、美式咖啡），并且你想要允许顾客添加各种调料（例如，牛奶、摩卡、奶油）来定制他们的咖啡。 使用装饰器模式，你可以在运行时动态地组合这些调料，而无需修改咖啡类的代码。</p>
+<p><strong>1. 咖啡接口 (Component Interface)</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 咖啡接口，定义了咖啡的基本行为（描述和价格）</span></span><br><span class="line"><span class="keyword">interface</span> <span class="title class_">Coffee</span> &#123;</span><br><span class="line">    String <span class="title function_">getDescription</span><span class="params">()</span>;</span><br><span class="line">    <span class="type">double</span> <span class="title function_">getCost</span><span class="params">()</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>2. 具体咖啡类 (Concrete Component)</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 具体咖啡类，实现了 Coffee 接口，表示具体的咖啡种类</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Espresso</span> <span class="keyword">implements</span> <span class="title class_">Coffee</span> &#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> String <span class="title function_">getDescription</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;浓缩咖啡&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="type">double</span> <span class="title function_">getCost</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">1.99</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Americano</span> <span class="keyword">implements</span> <span class="title class_">Coffee</span> &#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> String <span class="title function_">getDescription</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;美式咖啡&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="type">double</span> <span class="title function_">getCost</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">2.49</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>3. 调料装饰器抽象类 (Decorator Abstract Class)</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 调料装饰器抽象类，实现了 Coffee 接口，并持有一个 Coffee 对象的引用</span></span><br><span class="line"><span class="keyword">abstract</span> <span class="keyword">class</span> <span class="title class_">CoffeeDecorator</span> <span class="keyword">implements</span> <span class="title class_">Coffee</span> &#123;</span><br><span class="line">    <span class="keyword">protected</span> Coffee coffee;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">CoffeeDecorator</span><span class="params">(Coffee coffee)</span> &#123;</span><br><span class="line">        <span class="built_in">this</span>.coffee = coffee;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> String <span class="title function_">getDescription</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> coffee.getDescription(); <span class="comment">// 默认行为：委托给被装饰的咖啡对象</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="type">double</span> <span class="title function_">getCost</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> coffee.getCost(); <span class="comment">// 默认行为：委托给被装饰的咖啡对象</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>4. 具体调料装饰器类 (Concrete Decorator)</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 具体调料装饰器类，继承了 CoffeeDecorator 类，并添加了额外的行为（描述和价格）</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Milk</span> <span class="keyword">extends</span> <span class="title class_">CoffeeDecorator</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">Milk</span><span class="params">(Coffee coffee)</span> &#123;</span><br><span class="line">        <span class="built_in">super</span>(coffee);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> String <span class="title function_">getDescription</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> coffee.getDescription() + <span class="string">&quot;, 牛奶&quot;</span>; <span class="comment">// 添加调料的描述</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="type">double</span> <span class="title function_">getCost</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> coffee.getCost() + <span class="number">0.50</span>; <span class="comment">// 添加调料的价格</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Mocha</span> <span class="keyword">extends</span> <span class="title class_">CoffeeDecorator</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">Mocha</span><span class="params">(Coffee coffee)</span> &#123;</span><br><span class="line">        <span class="built_in">super</span>(coffee);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> String <span class="title function_">getDescription</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> coffee.getDescription() + <span class="string">&quot;, 摩卡&quot;</span>; <span class="comment">// 添加调料的描述</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="type">double</span> <span class="title function_">getCost</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> coffee.getCost() + <span class="number">0.75</span>; <span class="comment">// 添加调料的价格</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Whip</span> <span class="keyword">extends</span> <span class="title class_">CoffeeDecorator</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">Whip</span><span class="params">(Coffee coffee)</span> &#123;</span><br><span class="line">        <span class="built_in">super</span>(coffee);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> String <span class="title function_">getDescription</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> coffee.getDescription() + <span class="string">&quot;, 奶油&quot;</span>; <span class="comment">// 添加调料的描述</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="type">double</span> <span class="title function_">getCost</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> coffee.getCost() + <span class="number">1.00</span>; <span class="comment">// 添加调料的价格</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>5. 客户端 (Client)</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 客户端</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">DecoratorPatternDemo</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="comment">// 创建一杯浓缩咖啡</span></span><br><span class="line">        <span class="type">Coffee</span> <span class="variable">espresso</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Espresso</span>();</span><br><span class="line">        System.out.println(espresso.getDescription() + <span class="string">&quot; 价格: $&quot;</span> + espresso.getCost());</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 用牛奶和摩卡装饰浓缩咖啡</span></span><br><span class="line">        espresso = <span class="keyword">new</span> <span class="title class_">Milk</span>(espresso);</span><br><span class="line">        espresso = <span class="keyword">new</span> <span class="title class_">Mocha</span>(espresso);</span><br><span class="line">        System.out.println(espresso.getDescription() + <span class="string">&quot; 价格: $&quot;</span> + espresso.getCost());</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 创建一杯美式咖啡，并用奶油装饰</span></span><br><span class="line">        <span class="type">Coffee</span> <span class="variable">americano</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Americano</span>();</span><br><span class="line">        americano = <span class="keyword">new</span> <span class="title class_">Whip</span>(americano);</span><br><span class="line">        System.out.println(americano.getDescription() + <span class="string">&quot; 价格: $&quot;</span> + americano.getCost());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="7-代码解释"><a href="#7-代码解释" class="headerlink" title="7. 代码解释"></a>7. 代码解释</h4><ul>
+<li><strong><code>Coffee</code> 接口：</strong> 定义了 <code>getDescription()</code> 和 <code>getCost()</code> 方法，表示咖啡的基本行为。 这就是<strong>组件 (Component)</strong>.</li>
+<li><strong><code>Espresso</code> 和 <code>Americano</code> 类：</strong> 实现了 <code>Coffee</code> 接口，表示具体的咖啡种类. 这就是<strong>具体组件 (Concrete Component)</strong>.</li>
+<li><strong><code>CoffeeDecorator</code> 抽象类：</strong> 实现了 <code>Coffee</code> 接口，并持有一个 <code>Coffee</code> 对象的引用。 它是所有调料装饰器的基类。 这就是<strong>装饰器 (Decorator)</strong>.</li>
+<li><strong><code>Milk</code>, <code>Mocha</code>, <code>Whip</code> 类：</strong> 继承了 <code>CoffeeDecorator</code> 类，并添加了额外的行为（描述和价格），表示具体的调料. 这就是<strong>具体装饰器 (Concrete Decorator)</strong>.</li>
+<li><strong><code>DecoratorPatternDemo</code> 类：</strong> 客户端代码，演示了如何创建咖啡对象，并使用调料装饰器动态地组合调料。</li>
+</ul>
+<h4 id="8-运行结果"><a href="#8-运行结果" class="headerlink" title="8. 运行结果"></a>8. 运行结果</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">浓缩咖啡 价格: $1.99</span><br><span class="line">浓缩咖啡, 牛奶, 摩卡 价格: $3.24</span><br><span class="line">美式咖啡, 奶油 价格: $3.49</span><br></pre></td></tr></table></figure>
+
+<h4 id="9-总结"><a href="#9-总结" class="headerlink" title="9. 总结"></a>9. 总结</h4><p>装饰器模式是一种强大的设计模式，它允许你在运行时动态地扩展对象的功能，而无需修改对象的代码。 它通过组合而非继承的方式，提供了比继承更加灵活的扩展方式，并且符合开闭原则。 在实际应用中，需要注意装饰器的顺序，以及避免过度使用装饰器导致系统复杂性增加。</p>
+</article><div class="post-copyright"><div class="post-copyright__author_group"><div class="post-copyright__author_img"><img class="post-copyright__author_img_front" src="/img/logo.png"></div><div class="post-copyright__author_name">徍正</div><div class="post-copyright__author_desc"></div></div><div class="post-tools" id="post-tools"><div class="post-tools-left"><div id="quit-box" onclick="RemoveRewardMask()"></div></div></div><div class="post-copyright__notice"><span class="post-copyright-info">本文是原创文章，采用<a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh-hans">CC BY-NC-SA 4.0</a>协议，完整转载请注明来自<a href="/">徍正的随笔Blog</a></span></div></div><div class="post-tools-right"><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E5%AD%A6%E4%B9%A0/"><span class="tags-punctuation"><i class="solitude fas fa-hashtag"></i>学习<span class="tagsPageCount">17</span></span></a><a class="post-meta__tags" href="/tags/Java/"><span class="tags-punctuation"><i class="solitude fas fa-hashtag"></i>Java<span class="tagsPageCount">13</span></span></a><a class="post-meta__tags" href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/"><span class="tags-punctuation"><i class="solitude fas fa-hashtag"></i>设计模式<span class="tagsPageCount">12</span></span></a><a class="post-meta__tags" href="/tags/%E8%A3%85%E9%A5%B0%E5%99%A8%E6%A8%A1%E5%BC%8F/"><span class="tags-punctuation"><i class="solitude fas fa-hashtag"></i>装饰器模式<span class="tagsPageCount">1</span></span></a></div></div></div><nav class="needEndHide pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2025/04/28/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E8%A7%82%E5%AF%9F%E8%80%85%E6%A8%A1%E5%BC%8F/"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">设计模式-观察者模式</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="card-content"><div class="card-info-avatar is-center"><div class="top-group"><div class="sayhi" id="sayhi" onclick="sco.changeWittyWord()"></div></div></div><div class="avatar"><img alt="头像" src="https://avatars.githubusercontent.com/u/67722638?v=4"></div><div class="description">这是我的随笔Blog！</div><div class="bottom-group"><span class="left"><div class="name">徍正</div><div class="desc">在无聊的生活中，我会思考一些问题，然后会尝试着去记录它们。</div></span><div class="social-icons is-center"><a class="social-icon" target="_blank" rel="noopener" href="https://github.com/skyhjz" title="Github"><i class="solitude  fab fa-github"></i></a><a class="social-icon" target="_blank" rel="noopener" href="https://space.bilibili.com/17592360" title="Bilibili"><i class="solitude  fab fa-bilibili"></i></a></div></div></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="solitude fas fa-bars"></i><span>文章目录</span></div><div class="toc-content" id="toc-content"><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E8%A3%85%E9%A5%B0%E5%99%A8%E6%A8%A1%E5%BC%8F"><span class="toc-text">设计模式之装饰器模式</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-%E6%A6%82%E8%BF%B0"><span class="toc-text">1. 概述</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-%E6%A8%A1%E5%BC%8F%E6%84%8F%E5%9B%BE"><span class="toc-text">2. 模式意图</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-%E9%80%82%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="toc-text">3. 适用场景</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-%E4%BC%98%E7%BC%BA%E7%82%B9"><span class="toc-text">4. 优缺点</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-%E6%A8%A1%E5%BC%8F%E7%BB%93%E6%9E%84"><span class="toc-text">5. 模式结构</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#6-%E4%BB%A3%E7%A0%81%E7%A4%BA%E4%BE%8B"><span class="toc-text">6. 代码示例</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#7-%E4%BB%A3%E7%A0%81%E8%A7%A3%E9%87%8A"><span class="toc-text">7. 代码解释</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#8-%E8%BF%90%E8%A1%8C%E7%BB%93%E6%9E%9C"><span class="toc-text">8. 运行结果</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#9-%E6%80%BB%E7%BB%93"><span class="toc-text">9. 总结</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="solitude fas fa-map"></i><span>最近发布</span></div><div class="aside-list"><a class="aside-list-item" href="/2025/05/01/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E8%A3%85%E9%A5%B0%E5%99%A8%E6%A8%A1%E5%BC%8F/" title="设计模式-装饰器模式"><div class="thumbnail"><img alt="设计模式-装饰器模式" src="https://i.imgs.ovh/2025/05/09/vDKk4.jpeg"></div><div class="content"><span class="title" href="/2025/05/01/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E8%A3%85%E9%A5%B0%E5%99%A8%E6%A8%A1%E5%BC%8F/" title="设计模式-装饰器模式">设计模式-装饰器模式</span><span class="categories" href="/2025/05/01/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E8%A3%85%E9%A5%B0%E5%99%A8%E6%A8%A1%E5%BC%8F/">学习</span></div></a><a class="aside-list-item" href="/2025/04/28/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E8%A7%82%E5%AF%9F%E8%80%85%E6%A8%A1%E5%BC%8F/" title="设计模式-观察者模式"><div class="thumbnail"><img alt="设计模式-观察者模式" src="https://i.imgs.ovh/2025/05/09/vDWox.jpeg"></div><div class="content"><span class="title" href="/2025/04/28/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E8%A7%82%E5%AF%9F%E8%80%85%E6%A8%A1%E5%BC%8F/" title="设计模式-观察者模式">设计模式-观察者模式</span><span class="categories" href="/2025/04/28/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E8%A7%82%E5%AF%9F%E8%80%85%E6%A8%A1%E5%BC%8F/">学习</span></div></a><a class="aside-list-item" href="/2025/04/26/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E9%80%82%E9%85%8D%E8%80%85%E6%A8%A1%E5%BC%8F/" title="设计模式-适配者模式"><div class="thumbnail"><img alt="设计模式-适配者模式" src="https://i.imgs.ovh/2025/05/01/rq5rp.jpeg"></div><div class="content"><span class="title" href="/2025/04/26/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E9%80%82%E9%85%8D%E8%80%85%E6%A8%A1%E5%BC%8F/" title="设计模式-适配者模式">设计模式-适配者模式</span><span class="categories" href="/2025/04/26/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E9%80%82%E9%85%8D%E8%80%85%E6%A8%A1%E5%BC%8F/">学习</span></div></a><a class="aside-list-item" href="/2025/04/24/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%AD%96%E7%95%A5%E6%A8%A1%E5%BC%8F/" title="设计模式-策略模式"><div class="thumbnail"><img alt="设计模式-策略模式" src="https://i.imgs.ovh/2025/04/25/cBYYM.jpeg"></div><div class="content"><span class="title" href="/2025/04/24/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%AD%96%E7%95%A5%E6%A8%A1%E5%BC%8F/" title="设计模式-策略模式">设计模式-策略模式</span><span class="categories" href="/2025/04/24/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%AD%96%E7%95%A5%E6%A8%A1%E5%BC%8F/">学习</span></div></a><a class="aside-list-item" href="/2025/04/24/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E5%8E%9F%E5%9E%8B%E6%A8%A1%E5%BC%8F/" title="设计模式-原型模式"><div class="thumbnail"><img alt="设计模式-原型模式" src="https://i.imgs.ovh/2025/04/25/cxuL0.jpeg"></div><div class="content"><span class="title" href="/2025/04/24/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E5%8E%9F%E5%9E%8B%E6%A8%A1%E5%BC%8F/" title="设计模式-原型模式">设计模式-原型模式</span><span class="categories" href="/2025/04/24/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E5%8E%9F%E5%9E%8B%E6%A8%A1%E5%BC%8F/">学习</span></div></a></div></div></div></div></main><footer id="footer"><div id="footer_deal"><a class="deal_link" target="_blank" rel="noopener" href="https://github.com/skyhjz" title="Github"><i class="solitude  fab fa-github"></i></a><a class="deal_link" href="mailto:hjz0516@qq.com" title="E-Mail"><i class="solitude  fa-solid fa-square-envelope"></i></a><a class="deal_link" target="_blank" rel="noopener" href="https://space.bilibili.com/17592360" title="B站"><i class="solitude  fab fa-bilibili"></i></a><a class="deal_link" target="_blank" rel="noopener" href="https://m.weibo.cn/u/3102521153" title="微博"><i class="solitude  fa-brands fa-weibo"></i></a></div><div id="footer-bar"><div class="footer-bar-links"><div class="footer-bar-left"><div class="copyright">© 2024 - 2025 By&nbsp;<a class="footer-bar-link" href="/"><img class="author-avatar" src="https://i.imgs.ovh/2025/04/25/c1IKb.png">徍正</a></div><div class="beian-group"><a class="footer-bar-link" target="_blank" rel="noopener" href="https://hexo.io/">框架：Hexo</a><a class="footer-bar-link" target="_blank" rel="noopener" href="https://github.com/everfu/hexo-theme-solitude">主题：Solitude</a></div></div></div></div></footer></div><!-- right_menu--><div id="rightMenu"><div class="rightMenu-group rightMenu-small"><div class="rightMenu-item" id="menu-backward"><i class="solitude fas fa-arrow-left"></i></div><div class="rightMenu-item" id="menu-forward"><i class="solitude fas fa-arrow-right"></i></div><div class="rightMenu-item" id="menu-refresh"><i class="solitude fas fa-arrows-rotate"></i></div><div class="rightMenu-item" id="menu-top"><i class="solitude fas fa-arrow-up"></i></div></div><div class="rightMenu-group rightMenu-line rightMenuPlugin"><div class="rightMenu-item" id="menu-copytext"><i class="solitude fas fa-clone"></i><span>复制选中文本</span></div><div class="rightMenu-item" id="menu-pastetext"><i class="solitude fas fa-clipboard"></i><span>粘贴文本</span></div><div class="rightMenu-item" id="menu-newwindow"><i class="solitude far fa-window-maximize"></i><span>新窗口打开</span></div><div class="rightMenu-item" id="menu-copylink"><i class="solitude fas fa-link"></i><span>复制链接地址</span></div><div class="rightMenu-item" id="menu-copyimg"><i class="solitude fas fa-clone"></i><span>复制此图片</span></div><div class="rightMenu-item" id="menu-downloadimg"><i class="solitude fas fa-cloud-arrow-down"></i><span>下载此图片</span></div><div class="rightMenu-item" id="menu-search"><i class="solitude fas fa-magnifying-glass"></i><span>站内搜索</span></div></div><div class="rightMenu-group rightMenu-line rightMenuOther"><div class="rightMenu-item" id="menu-darkmode" onclick="sco.switchDarkMode()"><i class="solitude fas fa-circle-half-stroke"></i><span class="menu-darkmode-text">深色模式</span></div><div class="rightMenu-item" id="menu-translate"><i class="solitude fas fa-language"></i><span>轉為繁體</span></div></div></div><div id="rightmenu-mask"></div><!-- inject body--><div><script src="/js/utils.js?v=3.0.18"></script><script src="/js/main.js?v=3.0.18"></script><script src="/js/third_party/waterfall.min.js?v=3.0.18"></script><script src="https://fastly.jsdelivr.net/npm/pjax@0.2.8/pjax.min.js"></script><script src="/js/third_party/universe.min.js?v=3.0.18"></script><script>dark()
+</script><script src="/js/tw_cn.js?v=3.0.18"></script><script src="https://fastly.jsdelivr.net/npm/node-snackbar@0.1.16/dist/snackbar.min.js"></script><script>window.paceOptions = {
+  restartOnPushState: false
+}
+
+utils.addGlobalFn('pjaxSend', () => {
+  Pace.restart()
+}, 'pace_restart')
+</script><script src="https://fastly.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js"></script><script src="/js/right_menu.js?v=3.0.18"></script><div class="js-pjax"></div></div><!-- pjax--><script>const pjax = new Pjax({
+    elements: 'a:not([target="_blank"])',
+    selectors: ["title","#body-wrap","#site-config","meta[name=\"description\"]",".js-pjax","meta[property^=\"og:\"]","#config-diff",".rs_show",".rs_hide"],
+    cacheBust: false,
+    analytics: false,
+    scrollRestoration: false
+})
+
+document.querySelectorAll('script[data-pjax]').forEach(item => {
+    const newScript = document.createElement('script')
+    const content = item.text || item.textContent || item.innerHTML || ""
+    Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+    newScript.appendChild(document.createTextNode(content))
+    item.parentNode.replaceChild(newScript, item)
+})
+
+document.addEventListener('pjax:complete', () => {
+    window.refreshFn()
+
+    document.querySelectorAll('script[data-pjax]').forEach(item => {
+        const newScript = document.createElement('script')
+        const content = item.text || item.textContent || item.innerHTML || ""
+        Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+        newScript.appendChild(document.createTextNode(content))
+        item.parentNode.replaceChild(newScript, item)
+    })
+
+    GLOBAL_CONFIG.islazyload && window.lazyLoadInstance.update()
+
+})
+
+document.addEventListener('pjax:error', (e) => {
+    if (e.request.status === 404) {
+        pjax.loadUrl('/404.html')
+    }
+})</script><!-- google adsense--><!-- search--><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><button class="search-close-button"><i class="solitude fas fa-xmark"></i></button></nav><div class="search-wrap"><div class="search-box"><input class="search-box-input" id="search-input" type="text" autocomplete="off" spellcheck="false" autocorrect="off" autocapitalize="off" placeholder="输入关键词快速查找"></div><div id="search-results"><div id="search-hits"></div></div><div id="search-pagination"></div><div id="search-tips"></div></div></div><div id="search-mask"></div></div><script src="/js/search/local.js?v=3.0.18"></script><!-- music--></body></html>
+        <script>
+            const posts = ["2025/05/01/设计模式-装饰器模式/","2025/04/28/设计模式-观察者模式/","2025/04/26/设计模式-适配者模式/","2025/04/24/设计模式-策略模式/","2025/04/24/设计模式-原型模式/","2025/04/24/设计模式-外观模式/","2025/04/23/设计模式-模板方法模式/","2025/04/23/设计模式-建造者模式/","2025/04/22/设计模式-代理模式/","2025/04/20/设计模式-工厂模式/","2025/04/18/设计模式-单例模式/","2025/04/16/复习下设计模式/","2025/04/12/随笔-企业支付到微信零钱/","2025/04/10/Markdown软件推荐-Win系统/","2025/04/08/Hexo-Markdown语法/","2025/04/06/Hexo主题-Solitude/","2025/04/06/Hello-Hexo/"];
+            function toRandomPost() {
+                const randomPost = posts[Math.floor(Math.random() * posts.length)];
+                pjax.loadUrl(GLOBAL_CONFIG.root + randomPost);
+            }
+        </script>
